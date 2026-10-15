@@ -43,22 +43,22 @@ namespace CarCommunity.Api.Middleware
 
             switch (exception)
             {
-                case DomainException:
-                    response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    errorResponse = new
-                    {
-                        success = false,
-                        message = "Domain validation error.",
-                        error = exception.Message
-                    };
-                    break;
-
                 case InvalidEntityStateException:
                     response.StatusCode = (int)HttpStatusCode.UnprocessableEntity;
                     errorResponse = new
                     {
                         success = false,
                         message = "Invalid entity state.",
+                        error = exception.Message
+                    };
+                    break;
+
+                case DomainException:
+                    response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    errorResponse = new
+                    {
+                        success = false,
+                        message = "Domain validation error.",
                         error = exception.Message
                     };
                     break;
