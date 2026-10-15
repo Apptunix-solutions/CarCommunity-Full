@@ -1,8 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "npm install --no-audit --no-fund",
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist/frontend/browser",
+  "installCommand": "npm ci --prefix frontend --no-audit --no-fund",
+  "buildCommand": "npm run build --prefix frontend",
+  "outputDirectory": "frontend/dist/frontend",
   "rewrites": [
     {
       "source": "/((?!.*\\.).*)",

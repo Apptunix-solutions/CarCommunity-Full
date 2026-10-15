@@ -26,7 +26,15 @@ jobs:
       - uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
-      - uses: github/codeql-action/autobuild@v3
+      - name: Build supported .NET projects for CodeQL
+        if: matrix.language == 'csharp'
+        run: dotnet build CarCommunity/CarCommunity.Api/CarCommunity.Api.csproj --configuration Release
+      - name: Build frontend for CodeQL
+        if: matrix.language == 'javascript-typescript'
+        working-directory: frontend
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build -- --configuration production
       - uses: github/codeql-action/analyze@v3
         with:
           category: /language:${{ matrix.language }}

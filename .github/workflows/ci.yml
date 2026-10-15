@@ -27,9 +27,16 @@ jobs:
           node-version: 20
           cache: npm
           cache-dependency-path: frontend/package-lock.json
-      - run: npm install --no-audit --no-fund
+      - run: npm ci --no-audit --no-fund
       - run: npm run build -- --configuration production
-      - run: npm test -- --watch=false --browsers=ChromeHeadless
+      - name: Run frontend tests when specs exist
+        shell: bash
+        run: |
+          if find src -type f -name '*.spec.ts' -print -quit | grep -q .; then
+            npm test -- --watch=false --browsers=ChromeHeadless
+          else
+            echo "No frontend specs found; skipping Karma."
+          fi
 
   backend:
     name: Backend checks
