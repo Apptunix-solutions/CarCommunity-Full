@@ -27,9 +27,16 @@ jobs:
           node-version: 20
           cache: npm
           cache-dependency-path: frontend/package-lock.json
-      - run: npm install --no-audit --no-fund
+      - run: npm ci --no-audit --no-fund
       - run: npm run build -- --configuration production
-      - run: npm test -- --watch=false --browsers=ChromeHeadless
+      - name: Run frontend tests when specs exist
+        shell: bash
+        run: |
+          if find src -type f -name '*.spec.ts' -print -quit | grep -q .; then
+            npm test -- --watch=false --browsers=ChromeHeadless
+          else
+            echo "No frontend specs found; skipping Karma."
+          fi
 
   backend:
     name: Backend checks
@@ -38,7 +45,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 9.0.x
+          dotnet-version: 10.0.x
       - run: dotnet restore CarCommunity/CarCommunity.Api/CarCommunity.Api.csproj
       - run: dotnet build CarCommunity/CarCommunity.Api/CarCommunity.Api.csproj --no-restore --configuration Release
       - run: dotnet test CarCommunity/CarCommunity.Api/CarCommunity.Api.csproj --no-build --configuration Release --verbosity normal

@@ -30,9 +30,9 @@ namespace CarCommunity.Application.Validators
                 .NotEmpty().WithMessage("User ID is required");
         }
 
-        private bool BeAValidUrl(string url)
+        private bool BeAValidUrl(string? url)
         {
-            return Uri.TryCreate(url, UriKind.Absolute, out _);
+            return !string.IsNullOrWhiteSpace(url) && Uri.TryCreate(url, UriKind.Absolute, out _);
         }
     }
 }

@@ -40,9 +40,12 @@ jobs:
           if [ -n "$INPUT_VERSION" ]; then VERSION="$INPUT_VERSION"; else VERSION="$(date -u +'%Y.%-m.%-d')-${GITHUB_RUN_NUMBER}"; fi
           [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$ ]] || { echo 'Invalid semantic version'; exit 1; }
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci --no-audit --no-fund
       - name: Build frontend
         working-directory: frontend
-        run: npm install --no-audit --no-fund && npm run build -- --configuration production
+        run: npm run build -- --configuration production
       - name: Package frontend artifact
         run: tar -czf "frontend-dist-${{ steps.version.outputs.version }}.tar.gz" -C frontend/dist frontend
       - name: Create GitHub release
